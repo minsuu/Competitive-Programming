@@ -21,57 +21,57 @@ struct MCMF{
 		if( b<0 ) addedge( v, t, 0, -b );
 		else if( b>0 ) addedge( s, v, 0, b );
 	}
-    inline void addedge (int a, int b, int c, int cap1, int cap2 = 0) {
-        eadj[eind] = b; ecost[eind] =  c; ecap[eind] = cap1; eprev[eind] = elast[a]; elast[a] = eind++;
-        eadj[eind] = a; ecost[eind] = -c; ecap[eind] = cap2; eprev[eind] = elast[b]; elast[b] = eind++;
-    }
-    void BellmanFord(){
-    	for( int i=0; i<V; i++) dist[i] = DINF; dist[s] = 0;
-       	for( int i=1; i<V; i++){
-       		for( int u=0; u<V; u++)
-       			for( int j=elast[u]; j!=-1; j=eprev[j] ){
-       				if( ecap[j] <= 0 ) continue;
-       				int v=eadj[j];
-       				dist[v] = min( dist[v], dist[u] + pcost[j] );
-       			}
-    	}
-    }
-    void Dijkstra(){
-    	for( int i=0; i<V; i++) dist[i] = DINF; dist[s] = 0;
-    	memset( visit, 0, sizeof visit); memset( dpre, -1, sizeof dpre);
-    	while(1){
-    		int mind = DINF, u;
-    		for( int i=0; i<V; i++)
-    			if( !visit[i] && mind>dist[i] ) mind=dist[i], u=i;
-    		if( mind == DINF ) break;
-    		visit[u] = 1;
-    		for( int i=elast[u]; i!=-1; i=eprev[i] ){
-    			if( ecap[i] <= 0 ) continue;
-    			int v = eadj[i];
-    			if( dist[v] > dist[u] + pcost[i] )
-    				dist[v] = dist[u] + pcost[i], dpre[v] = u, dedge[v] = i;
-    		}
-    	}
-    }
-    int mincost(){
-    	ret = 0; memcpy( pcost, ecost, eind * sizeof(int) );
-    	BellmanFord(); reduce();
-    	// for(int i=0; i<V; i++) printf("%d ",dist[i]); printf("\n");
-    	while( 1 ){
-    		Dijkstra();
-        	// for(int i=0; i<V; i++) printf("%d ",dist[i]); printf("\n");
-    		if( dist[t] == DINF ) break;
-    		reduce();
-    		int f = INF;
-    		for( int i = t; i != s; i = dpre[i] )
-    			f = min( f, ecap[dedge[i]] );
-    		for( int i = t; i != s; i = dpre[i] ){
-    			int e = dedge[i];
-    			ecap[e] -= f; ecap[e^1] += f; ret+=ecost[e]*f;	
-    		}
-    	}
-    	return ret;
-    }
+	inline void addedge (int a, int b, int c, int cap1, int cap2 = 0) {
+		eadj[eind] = b; ecost[eind] =  c; ecap[eind] = cap1; eprev[eind] = elast[a]; elast[a] = eind++;
+		eadj[eind] = a; ecost[eind] = -c; ecap[eind] = cap2; eprev[eind] = elast[b]; elast[b] = eind++;
+	}
+	void BellmanFord(){
+		for( int i=0; i<V; i++) dist[i] = DINF; dist[s] = 0;
+		for( int i=1; i<V; i++){
+			for( int u=0; u<V; u++)
+				for( int j=elast[u]; j!=-1; j=eprev[j] ){
+					if( ecap[j] <= 0 ) continue;
+					int v=eadj[j];
+					dist[v] = min( dist[v], dist[u] + pcost[j] );
+				}
+		}
+	}
+	void Dijkstra(){
+		for( int i=0; i<V; i++) dist[i] = DINF; dist[s] = 0;
+		memset( visit, 0, sizeof visit); memset( dpre, -1, sizeof dpre);
+		while(1){
+			int mind = DINF, u;
+			for( int i=0; i<V; i++)
+				if( !visit[i] && mind>dist[i] ) mind=dist[i], u=i;
+			if( mind == DINF ) break;
+			visit[u] = 1;
+			for( int i=elast[u]; i!=-1; i=eprev[i] ){
+				if( ecap[i] <= 0 ) continue;
+				int v = eadj[i];
+				if( dist[v] > dist[u] + pcost[i] )
+					dist[v] = dist[u] + pcost[i], dpre[v] = u, dedge[v] = i;
+			}
+		}
+	}
+	int mincost(){
+		ret = 0; memcpy( pcost, ecost, eind * sizeof(int) );
+		BellmanFord(); reduce();
+		// for(int i=0; i<V; i++) printf("%d ",dist[i]); printf("\n");
+		while( 1 ){
+			Dijkstra();
+			// for(int i=0; i<V; i++) printf("%d ",dist[i]); printf("\n");
+			if( dist[t] == DINF ) break;
+			reduce();
+			int f = INF;
+			for( int i = t; i != s; i = dpre[i] )
+				f = min( f, ecap[dedge[i]] );
+			for( int i = t; i != s; i = dpre[i] ){
+				int e = dedge[i];
+				ecap[e] -= f; ecap[e^1] += f; ret+=ecost[e]*f;	
+			}
+		}
+		return ret;
+	}
 };
 MCMF g;
 int T, N,M, a,b,c;
