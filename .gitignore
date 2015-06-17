@@ -1,4 +1,5 @@
 *.[oa]
 *~
 *.exe
+*.stackdump
 input.txt
