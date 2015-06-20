@@ -2,7 +2,6 @@
 using namespace std;
 const int MAXN = 111111;
 const int MAXL = 1987654321;
-deque<int> D;
 int N, lim, X[MAXN], H[MAXN];
 int main(){
 	scanf("%d",&N);
