@@ -9,7 +9,7 @@ vector<Edge> linkd[MAXN];
 
 int main(){
 	scanf("%d",&T);
-	while(T--){
+	while(T--){ 
 		scanf("%d%d%d",&N,&M,&S);
 		memset( visited, 0, sizeof visited );
 		memset( sl, 0, sizeof sl );
