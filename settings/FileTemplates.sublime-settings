@@ -1,0 +1,21 @@
+{
+  "excluded_dir_patterns": [
+    "tmp", "|.git", "|.svn"
+  ],
+  "attrs": {
+    "author": "minsu",
+    "company": "company",
+    "email": "ps_ir@naver.com",
+    "github": "https://github.com/minsuu/"
+  },
+  "creation_time": {
+    "day": "%d",
+    "month": "%m",
+    "year": "%Y",
+    "short_weekdayname": "%a",
+    "weekdayname": "%A",
+    "short_monthname": "%b",
+    "date": "%d/%m/%Y",
+    "time": "%H:%M:%S"
+  }
+}

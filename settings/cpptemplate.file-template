@@ -1,0 +1,24 @@
+<template>
+	<!-- You can us this to specifiy the content for the Template -->
+	<content><![CDATA[// $short_monthname $day $year, $author( github : $github )
+#include <bits/stdc++.h>
+using namespace std;
+int main(){
+	
+	return 0;
+} ]]></content>
+	<!-- Or you set a path to a seperate Template File here -->
+	<!--<file>Files/FileTemplate.file-template</file>-->
+
+	<!-- The filename for the new File, you can use the arguments to make it dynamic -->
+	<filename>$name.cpp</filename>
+
+	<!-- Default Path to create the new file inside your current Project -->
+	<!-- you can use the arguments to make it dynamic -->
+	<path>/</path>
+
+	<!-- Optional: Add as much arguments as you need, they will be asked in the order specified -->
+	<arguments>
+		<name>Name (without extension):</name>
+	</arguments>
+</template>
