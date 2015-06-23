@@ -42,12 +42,12 @@ int main(){
 	} printf("%d ",dp[i]); */
 	st.push({ 0, 0 });
 	while(!st.empty()){
-		int h = st.top().here, i = st.top().it++;
+		int h = st.top().h+ere, i = st.top().it++;
 		if( i == 0 ) ret[h] = dp[h];
 		if( i == linkd[h].size() ){
 			dp[h] = post[h][0];
 			dp[par[h]] = dp[par[h]] * 1LL * ( dp[h] + 1 ) % MOD;
-			st.pop(); continue;
+			st.pop();continue;
 		}
 		int t = linkd[h][i];
 		dp[h] = pre[h][i] * 1LL * post[h][i+1] % MOD;
