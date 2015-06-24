@@ -6,9 +6,9 @@ int sieve[MAXN], phi[MAXN];
 struct divEnum{
 	int f[111], a[111], b[111], fn;
 	divEnum(int n){
-		fn = 0; int last = -1, c=0;
+		fn = 0; int last = -1;
 		memset( a, 0, sizeof a ); memset( b, 0, sizeof b );
-		while( n!=1 && ++c!=100){
+		while( n!=1 ){
 			if( last != sieve[n] ) f[fn++] = last = sieve[n];
 			a[fn-1]++; n /= sieve[n];
 		}
@@ -37,14 +37,22 @@ int main(){
 	} phi[1] = 1;
 	// phi(x^p) = (x-1)*x^(p-1)
 	for(int i=2; i<MAXN; i++){
-		if( sieve[i] == 0 ) phi[i] = i-1;
+		if( sieve[i] == 0 ) phi[i] = i-1, sieve[i] = i;
 		else{
 			int x = sieve[i], j = i/x, p = 1;
 			while( j%x == 0 ) j/=x, p*=x;
 			phi[i] = phi[j] * (x-1) * p;
 		}
+	} phi[1] = 0;
+	int N=0,T;
+	scanf("%d",&T);
+	while(T--){
+		scanf("%d",&N);
+		long long ans = 1LL;
+		for(divEnum d(N); !d.end(); ++d )
+			ans = ans + d * 1LL * phi[d];
+		ans = N * ( 1 + ans ) / 2;
+		printf("%lld\n",ans);
 	}
-	for(divEnum d(100); !d.end(); ++d )
-		printf("%d ",(int)d);
 	return 0;
 }
