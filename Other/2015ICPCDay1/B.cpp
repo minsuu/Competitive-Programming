@@ -31,6 +31,9 @@ void go(lld x, lld y, lld z, lld n ){
 	get( (x/N)*(y/N), N, N, z%N, n );
 	get( x/N, N, y%N, z%N, n );
 	get( y/N, x%N, N, z%N, n );
+
+
+	
 	get( z/N, x%N, y%N, N, n );
 	get( 1, x%N, y%N, z%N, n );
 }

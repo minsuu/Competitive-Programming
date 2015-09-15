@@ -1,6 +1,7 @@
 *.[oa]
 *~
 *.exe
+*.in
 *.zip
 *.stackdump
 input.txt
