@@ -1,7 +1,6 @@
 import java.io.*;
 import java.util.*;
-import java.util.stream.*;
-
+ 
 public class Main {
     InputStream is;
     PrintWriter out;
@@ -9,33 +8,9 @@ public class Main {
 
     void solve()
     {
-        int[] array = IntStream.range(0, 5).toArray();
-        for (int v : array) {
-            System.out.println(v);
-        }
-        for (int i = 0; i < array.length; i++) {
-            System.out.println(array[i]);
-        }
-        List<Integer> list = IntStream.range(0, 5).boxed().collect(Collectors.toList());
-        for (int v : list) {
-            System.out.println(v);
-        }
-        for (int i = 0; i < list.size(); i++) {
-            System.out.println(list.get(i));
-        }
-
-        IntStream stream = IntStream.range(0, 5);
-        stream.forEach(System.out::println);
-		
-		int N = ni(), M = ni();
-		int[] bags = new int[N];
-		for(int i=0; i<N; i++) bags[i] = i+1;
-		for(int i=0; i<M; i++){
-			int a = ni(), b = ni(); a--; b--;
-			int t = bags[a]; bags[a] = bags[b]; bags[b] = t;
-		}
-		for(int i=0; i<N; i++) out.printf("%d ",bags[i]);
-	}
+        int a = ni(), b = ni(); b--;
+        out.println( a*b+1 );
+    }
      
     void run() throws Exception
     {

@@ -1,40 +1,18 @@
 import java.io.*;
 import java.util.*;
-import java.util.stream.*;
-
+ 
 public class Main {
     InputStream is;
     PrintWriter out;
-    Boolean oj = true;
+    Boolean oj = true, eof = false;
 
     void solve()
     {
-        int[] array = IntStream.range(0, 5).toArray();
-        for (int v : array) {
-            System.out.println(v);
-        }
-        for (int i = 0; i < array.length; i++) {
-            System.out.println(array[i]);
-        }
-        List<Integer> list = IntStream.range(0, 5).boxed().collect(Collectors.toList());
-        for (int v : list) {
-            System.out.println(v);
-        }
-        for (int i = 0; i < list.size(); i++) {
-            System.out.println(list.get(i));
-        }
-
-        IntStream stream = IntStream.range(0, 5);
-        stream.forEach(System.out::println);
-		
-		int N = ni(), M = ni();
-		int[] bags = new int[N];
-		for(int i=0; i<N; i++) bags[i] = i+1;
-		for(int i=0; i<M; i++){
-			int a = ni(), b = ni(); a--; b--;
-			int t = bags[a]; bags[a] = bags[b]; bags[b] = t;
+		int tc = ni();
+		while( tc-- > 0 ){
+			int a = ni(), b = ni();
+			out.println( a+b );
 		}
-		for(int i=0; i<N; i++) out.printf("%d ",bags[i]);
 	}
      
     void run() throws Exception
@@ -59,7 +37,10 @@ public class Main {
         if(ptrbuf >= lenbuf){
             ptrbuf = 0;
             try { lenbuf = is.read(inbuf); } catch (IOException e) { throw new InputMismatchException(); }
-            if(lenbuf <= 0)return -1;
+            if(lenbuf <= 0){
+				eof = true;
+				return -1;
+			}
         }
         return inbuf[ptrbuf++];
     }
@@ -149,3 +130,5 @@ public class Main {
 
     private void tr(Object... o) { if(!oj)System.out.println(Arrays.deepToString(o)); }
 }
+
+
