@@ -1,87 +1,109 @@
-// Oct 14 2015, minsu( github : https://github.com/minsuu/ )
+// Oct 22 2015, minsu( github : https://github.com/minsuu/ )
 #include <bits/stdc++.h>
 #define F first
 #define S second
 using namespace std;
 typedef pair<int,int> ii;
-typedef pair<int, array<int,2> > iii;
+typedef pair<int, array<int,3> > iii;
 
 const int INF = 987654321;
+const int null = 2222222;
 int T,N,M, a,b,c;
-iii E[100100]; vector<ii> S[400100];
+iii E[100100];
+
+struct node{
+	int s, l, r;
+	node (int s, int l, int r ) : s(s), l(l), r(r) {}
+	int insert( int l, int r, int k, int v );
+};
+
+node* stree[2222223]; int tn, ftree[100100];
+int node::insert( int l, int r, int k, int v ){
+	if( l<=k && k<r ){
+		if( l+1 == r ){
+			int nn = tn++;
+			stree[ nn ] = new node( this->s + v, this->l, this->r );
+			return nn;
+		}
+		int m = ( l + r ) / 2, nn = tn++;
+		stree[ nn ] = new node( this->s + v,
+								( m <= k ) ? this->l : stree[this->l]->insert( l, m, k, v ),
+						 		( k  < m ) ? this->r : stree[this->r]->insert( m, r, k, v ) );
+		return nn;
+	}
+	return null;
+}
+
+// summation through [k..N] ; postfix sum
+int query( int nw, int l, int r, int k ){
+	if( l+1 == r ) return stree[nw]->s;
+
+	int m = ( l + r ) / 2;
+	if( m <= k )
+		return query( stree[nw]->r, m, r, k );
+	else
+		return query( stree[nw]->l, l, m, k ) + stree[stree[nw]->r]->s;
+}
 
 map<int, int> span[1111];
 
 bool dfs( int u, const int& v, int p, int m, int& f ){
-	if( u == v ){
-		f = m;
-		return true;
-	}
-	for( auto it : span[u] )
-		if( it.S != p && dfs( it.S, v, u, min( m, it.F ), f ) )
-			return true;
-	return false;
+    if( u == v ){
+        f = m;
+        return true;
+    }
+    for( auto it : span[u] )
+        if( it.S != p && dfs( it.S, v, u, min( m, it.F ), f ) )
+            return true;
+    return false;
 }
-void update( int l, int I, int J, const int& p, const ii& v ){
-	if( I <= p && p < J ){
-		if( S[l].back().F == v.F ){
-			S[l].back().S += v.S;
-		}else{
-			S[l].emplace_back( ii( v.F, v.S + S[l].back().S ) );
-		}
-		if( J - I != 1 ){
-			int m = ( I + J ) / 2;
-			update( l*2+1, I, m, p, v );
-			update( l*2+2, m, J, p, v );
-		}
-	}
-}
-int query( int l, int I, int J, int i, int j ){
-	if( J <= i || j <= I ) return 0;
-	if( i <= I && J <= j ){
-		return ( --lower_bound( S[l].begin(), S[l].end(), ii( j, 0 ) ) )->S
-			- ( --lower_bound( S[l].begin(), S[l].end(), ii( i, 0 ) ) )->S;
-	}
-	int m = ( I + J ) /2;
-	return query( l*2+1, I, m, i, j ) + query( l*2+2, m, J, i, j );
-}
+
 bool cmp( const iii& a, const iii& b ) {
-	return a.F > b.F;
+    return a.F > b.F;
 }
 int main(){
-	ios::sync_with_stdio(false);
-	cin>>T;
-	while(T--){
-		cin>>N>>M;
-		for(int i=0; i<N; i++) span[i].clear();
-		for(int i=0; i<4*M; i++) vector<ii>(1, {-1, 0} ).swap( S[i] );
+	stree[null] = new node( 0, null, null );
+    scanf("%d",&T);
+    while(T--){
+        scanf("%d%d",&N,&M);
+        for(int i=0; i<N; i++) span[i].clear();
+        assert( tn <= null );
+        for(int i=0; i<tn; i++) delete stree[i];
+        tn = 0;
 
-		for(int i=0; i<M; i++){
-			cin>>a>>b>>c; a--;b--;
-			if( a>b ) swap(a,b);
-			E[i] = { c, {a,b} };
-		}
-		sort( E, E+M, cmp );
-		for(int i=0; i<M; i++){
-			int f;
-			if( dfs( E[i].S[0], E[i].S[1], -1, INF, f ) ){
-				update( 0, 0, M, f, ii( i, -E[f].F) );
-				span[ E[f].S[0] ].erase( f );
-				span[ E[f].S[1] ].erase( f );
-			}
-			update( 0, 0, M, i, ii( i, E[i].F) );
-			span[ E[i].S[0] ][ i ] = E[i].S[1];
-			span[ E[i].S[1] ][ i ] = E[i].S[0];
-		}
-		int Q, lsol = 0;
-		cin>>Q;
-		while( Q-- ){
-			cin>>a>>b; a -= lsol; b -= lsol;
-			a = lower_bound( E, E+M, iii(a-1, {0,0}), cmp ) - E - 1;
-			b = lower_bound( E, E+M, iii(b, {0,0}), cmp ) - E;
-			lsol = query( 0, 0, M, b, a+1 );
-			cout<<lsol<<"\n";
-		}
-	}
-	return 0;
+        for(int i=0; i<M; i++){
+        	scanf("%d%d%d",&a,&b,&c);
+            a--;b--;
+            if( a>b ) swap(a,b);
+            E[i] = { c, {a,b,M} };
+        }
+
+        sort( E, E+M, cmp );
+        for(int i=0; i<M; i++){
+            int f;
+            if( dfs( E[i].S[0], E[i].S[1], -1, INF, f ) ){
+            	// f : index of edge to be erased (maximum weight)
+				E[f].S[2] = i;
+                span[ E[f].S[0] ].erase( f );
+                span[ E[f].S[1] ].erase( f );
+            }
+            span[ E[i].S[0] ][ i ] = E[i].S[1];
+            span[ E[i].S[1] ][ i ] = E[i].S[0];
+        }
+        for(int i=0; i<M; i++){
+        	ftree[i] = ( i ? stree[ftree[i-1]] : stree[null] ) -> insert( 0, M+1, E[i].S[2], E[i].F );
+        }
+
+        int Q, lsol = 0;
+        scanf("%d",&Q);
+        while( Q-- ){
+            scanf("%d%d",&a,&b); a -= lsol; b -= lsol;
+            // 0 .. b .. a
+            a = lower_bound( E, E+M, iii(a-1, {0,0,0}), cmp ) - E - 1;
+            b = lower_bound( E, E+M, iii(b, {0,0,0}), cmp ) - E;
+            lsol = query( ftree[a], 0, M+1, a+1 ) - ( b? query( ftree[b-1], 0, M+1, a+1) : 0 );
+            printf("%d\n",lsol);
+        }
+    }
+    return 0;
  }
