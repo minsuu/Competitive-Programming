@@ -1,6 +1,6 @@
 import java.io.*;
 import java.util.*;
-import java.util.stream.*;
+import java.lang.*;
 
 public class Main {
     InputStream is;
@@ -9,32 +9,13 @@ public class Main {
 
     void solve()
     {
-        int[] array = IntStream.range(0, 5).toArray();
-        for (int v : array) {
-            System.out.println(v);
-        }
-        for (int i = 0; i < array.length; i++) {
-            System.out.println(array[i]);
-        }
-        List<Integer> list = IntStream.range(0, 5).boxed().collect(Collectors.toList());
-        for (int v : list) {
-            System.out.println(v);
-        }
-        for (int i = 0; i < list.size(); i++) {
-            System.out.println(list.get(i));
-        }
-
-        IntStream stream = IntStream.range(0, 5);
-        stream.forEach(System.out::println);
-		
-		int N = ni(), M = ni();
-		int[] bags = new int[N];
-		for(int i=0; i<N; i++) bags[i] = i+1;
-		for(int i=0; i<M; i++){
-			int a = ni(), b = ni(); a--; b--;
-			int t = bags[a]; bags[a] = bags[b]; bags[b] = t;
+		int nw = 0, mx = 0;
+		for(int i=0; i<10; i++){
+			int a = ni(), b = ni();
+			nw -= a; nw += b;
+			mx = Math.max( mx, nw );
 		}
-		for(int i=0; i<N; i++) out.printf("%d ",bags[i]);
+		out.println(mx);
 	}
      
     void run() throws Exception

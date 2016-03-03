@@ -1,7 +1,7 @@
+import java.lang.*;
 import java.io.*;
 import java.util.*;
-import java.util.stream.*;
-
+ 
 public class Main {
     InputStream is;
     PrintWriter out;
@@ -9,32 +9,15 @@ public class Main {
 
     void solve()
     {
-        int[] array = IntStream.range(0, 5).toArray();
-        for (int v : array) {
-            System.out.println(v);
-        }
-        for (int i = 0; i < array.length; i++) {
-            System.out.println(array[i]);
-        }
-        List<Integer> list = IntStream.range(0, 5).boxed().collect(Collectors.toList());
-        for (int v : list) {
-            System.out.println(v);
-        }
-        for (int i = 0; i < list.size(); i++) {
-            System.out.println(list.get(i));
-        }
-
-        IntStream stream = IntStream.range(0, 5);
-        stream.forEach(System.out::println);
-		
-		int N = ni(), M = ni();
-		int[] bags = new int[N];
-		for(int i=0; i<N; i++) bags[i] = i+1;
-		for(int i=0; i<M; i++){
-			int a = ni(), b = ni(); a--; b--;
-			int t = bags[a]; bags[a] = bags[b]; bags[b] = t;
+		int n = ni();
+		for(int i=0; i<2*n-1; i++){
+			String buf = new String();
+			for(int j=0; j<n; j++){
+				if( Math.abs(i-n+1) <= j ) buf += "*";
+				else buf += " ";
+			}
+			out.println(buf);
 		}
-		for(int i=0; i<N; i++) out.printf("%d ",bags[i]);
 	}
      
     void run() throws Exception
@@ -149,3 +132,4 @@ public class Main {
 
     private void tr(Object... o) { if(!oj)System.out.println(Arrays.deepToString(o)); }
 }
+
