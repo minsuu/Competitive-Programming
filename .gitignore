@@ -5,6 +5,7 @@
 *.out
 *.zip
 *.stackdump
+*.dSYM
 input.txt
 **/API*/
 .DS_Store
