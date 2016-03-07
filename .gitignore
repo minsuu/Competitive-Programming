@@ -7,3 +7,4 @@
 *.stackdump
 input.txt
 **/API*/
+.DS_Store
