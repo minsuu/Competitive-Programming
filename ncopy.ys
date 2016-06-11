@@ -1,0 +1,290 @@
+#/* $begin ncopy-ys */
+##################################################################
+# ncopy.ys - Concatenates a src block of len ints to dst.
+# Return the number of positive ints (>0) contained in src.
+# (*) Note: Pseudo-end of array is 0xccaaff.
+##################################################################
+# 수정사항 - 김민수(2010-10352)
+# 1. Loop Unrolling을 사용하여 16회씩 묶어 처리하여, index조정에 드는 cycle을 최소화하였다.
+# 2. 16회의 나머지 부분에 대한 처리는 16으로 나눈 나머지에 대해서 jump table을 사용함으로써
+#    효율적인 처리를 하였다.
+# 3. pseudo-end를 찾는 데 있어 mrmovl과 xorl을 이어서 사용하면 load/use hazard가 발생한다.
+#    따라서 %esi와 %edi에 동시에 받아와서 번갈아가면서 사용하였다.
+##################################################################
+# Do not modify this portion (Function Prolog)
+ncopy:  pushl %ebp    # Save old frame pointer
+  rrmovl %esp,%ebp  # Set up new frame pointer
+  pushl %esi    # Save callee-save regs
+  pushl %ebx
+  pushl %edi
+  mrmovl 8(%ebp),%ebx   # src
+  mrmovl 12(%ebp),%ecx  # dst
+  mrmovl 16(%ebp),%edx  # len
+##################################################################
+# You can modify this portion
+  # Loop header
+  irmovl $0xccaaff,%eax # pseudo-end of file
+  jmp Move
+
+M16:
+  iaddl $64, %ecx
+  jmp Move
+M15:
+  xorl %eax, %esi
+  jne M16
+  iaddl $64, %ecx
+  jmp Fnd
+M14:
+  mrmovl 56(%ecx),%edi   # *(dst+14)
+  mrmovl 60(%ecx),%esi   # *(dst+15)
+  xorl %eax, %edi
+  jne M15
+  iaddl $60, %ecx
+  jmp Fnd
+M13:
+  xorl %eax, %esi
+  jne M14
+  iaddl $56, %ecx
+  jmp Fnd
+M12:
+  mrmovl 48(%ecx),%edi   # *(dst+12)
+  mrmovl 52(%ecx),%esi   # *(dst+13)
+  xorl %eax, %edi
+  jne M13
+  iaddl $52, %ecx
+  jmp Fnd
+M11:
+  xorl %eax, %esi
+  jne M12
+  iaddl $48, %ecx
+  jmp Fnd
+M10:
+  mrmovl 40(%ecx),%edi   # *(dst+10)
+  mrmovl 44(%ecx),%esi   # *(dst+11)
+  xorl %eax, %edi
+  jne M11
+  iaddl $44, %ecx
+  jmp Fnd
+M9:
+  xorl %eax, %esi
+  jne M10
+  iaddl $40, %ecx
+  jmp Fnd
+M8:
+  mrmovl 32(%ecx),%edi   # *(dst+8)
+  mrmovl 36(%ecx),%esi   # *(dst+9)
+  xorl %eax, %edi
+  jne M9
+  iaddl $36, %ecx
+  jmp Fnd  
+M7:
+  xorl %eax, %esi
+  jne M8
+  iaddl $32, %ecx
+  jmp Fnd
+M6:
+  mrmovl 24(%ecx),%edi   # *(dst+6)
+  mrmovl 28(%ecx),%esi   # *(dst+7)
+  xorl %eax, %edi
+  jne M7
+  iaddl $28, %ecx
+  jmp Fnd
+M5:
+  xorl %eax, %esi
+  jne M6
+  iaddl $24, %ecx
+  jmp Fnd
+M4:
+  mrmovl 16(%ecx),%edi   # *(dst+4)
+  mrmovl 20(%ecx),%esi   # *(dst+5)
+  xorl %eax, %edi
+  jne M5
+  iaddl $20, %ecx
+  jmp Fnd
+M3:
+  xorl %eax, %esi
+  jne M4
+  iaddl $16, %ecx
+  jmp Fnd
+M2:
+  mrmovl 8(%ecx),%edi    # *(dst+2)
+  mrmovl 12(%ecx),%esi   # *(dst+3)
+  xorl %eax, %edi
+  jne M3
+  iaddl $12, %ecx
+  jmp Fnd
+M1:
+  xorl %eax, %esi
+  jne M2
+  iaddl $8, %ecx
+  jmp Fnd
+Move:
+  mrmovl (%ecx),%edi    # *dst
+  mrmovl 4(%ecx),%esi   # *(dst+1)
+  xorl %eax, %edi
+  jne M1
+  iaddl $4, %ecx
+Fnd:
+  xorl %eax,%eax        # init count
+  irmovl $15, %esi
+  andl %edx, %esi       # esi = len % 16
+  subl %esi, %edx       # edx is multiple of 16
+  addl %esi, %esi
+  addl %esi, %esi       # esi = 4*esi
+  mrmovl jt(%esi), %edi
+  pushl %edi
+  ret
+  
+L16:
+  mrmovl 60(%ebx), %edi
+  rmmovl %edi, 60(%ecx)
+  andl %edi, %edi
+  jle L15
+  iaddl $1, %eax  
+
+L15:
+  mrmovl 56(%ebx), %edi
+  rmmovl %edi, 56(%ecx)
+  andl %edi, %edi
+  jle L14
+  iaddl $1, %eax
+
+L14:
+  mrmovl 52(%ebx), %edi
+  rmmovl %edi, 52(%ecx)
+  andl %edi, %edi
+  jle L13
+  iaddl $1, %eax 
+
+L13:
+  mrmovl 48(%ebx), %edi
+  rmmovl %edi, 48(%ecx)
+  andl %edi, %edi
+  jle L12
+  iaddl $1, %eax
+
+L12:
+  mrmovl 44(%ebx), %edi
+  rmmovl %edi, 44(%ecx)
+  andl %edi, %edi
+  jle L11
+  iaddl $1, %eax
+
+L11:
+  mrmovl 40(%ebx), %edi
+  rmmovl %edi, 40(%ecx)
+  andl %edi, %edi
+  jle L10
+  iaddl $1, %eax
+
+L10:
+  mrmovl 36(%ebx), %edi
+  rmmovl %edi, 36(%ecx)
+  andl %edi, %edi
+  jle L9
+  iaddl $1, %eax
+
+L9:
+  mrmovl 32(%ebx), %edi
+  rmmovl %edi, 32(%ecx)
+  andl %edi, %edi
+  jle L8
+  iaddl $1, %eax
+
+L8:
+  mrmovl 28(%ebx), %edi
+  rmmovl %edi, 28(%ecx)
+  andl %edi, %edi
+  jle L7
+  iaddl $1, %eax
+
+L7:
+  mrmovl 24(%ebx), %edi
+  rmmovl %edi, 24(%ecx)
+  andl %edi, %edi
+  jle L6
+  iaddl $1, %eax
+
+L6:
+  mrmovl 20(%ebx), %edi
+  rmmovl %edi, 20(%ecx)
+  andl %edi, %edi
+  jle L5
+  iaddl $1, %eax
+
+L5:
+  mrmovl 16(%ebx), %edi
+  rmmovl %edi, 16(%ecx)
+  andl %edi, %edi
+  jle L4
+  iaddl $1, %eax
+
+L4:
+  mrmovl 12(%ebx), %edi
+  rmmovl %edi, 12(%ecx)
+  andl %edi, %edi
+  jle L3
+  iaddl $1, %eax
+
+L3:
+  mrmovl 8(%ebx), %edi
+  rmmovl %edi, 8(%ecx)
+  andl %edi, %edi
+  jle L2
+  iaddl $1, %eax
+
+L2:
+  mrmovl 4(%ebx), %edi
+  rmmovl %edi, 4(%ecx)
+  andl %edi, %edi
+  jle L1
+  iaddl $1, %eax
+
+L1:
+  mrmovl (%ebx), %edi
+  rmmovl %edi, (%ecx)
+  addl %esi, %ebx        # increase dst and src here
+  addl %esi, %ecx        # since %ebx, %ecx no longer used
+  andl %edi, %edi
+  jle L0
+  iaddl $1, %eax
+
+L0:
+  irmovl $64, %esi
+  iaddl $-16, %edx      # len = len - 16
+  jge L16
+  
+##################################################################
+# Do not modify the following section of code
+# Function epilogue.
+Done:
+  popl %edi
+  popl %ebx
+  popl %esi
+  rrmovl %ebp, %esp
+  popl %ebp
+  ret
+
+jt:
+  .long L0
+  .long L1
+  .long L2
+  .long L3
+  .long L4
+  .long L5
+  .long L6
+  .long L7
+  .long L8
+  .long L9
+  .long L10
+  .long L11
+  .long L12
+  .long L13
+  .long L14
+  .long L15
+  .long L16
+
+##################################################################
+# Keep the following label at the end of your function
+End:
+#/* $end ncopy-ys */
