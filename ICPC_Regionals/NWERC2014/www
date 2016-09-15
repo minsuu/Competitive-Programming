@@ -1,9 +1,0 @@
-T(n) & \le c(n/4)\log(n/4) + c(3n/4)\log(3n/4) + O(n) \\
-& = c(n/4)(\log{n}+3\log{n}) + c(n/4)(\log(1/4)+3\log(3/4)) + O(n) \\
-& \le cn\log{n} + (c/4)\{\log(1/4)+3\log(3/4)\}n + kn \text{ for some constant $k>0$ } \\
-& \le cn\log{n} \text{ (if } (c/4)\{\log(1/4)+3\log(3/4)\}+k<0 \text{)} \\
-\end{split}
-\nonumber
-\end{equation}
-
-We can find such $c> \frac{4k}{\log(4)+3\log(4/3)} > 0$. Therefore, $T(n)=O(n\log{n})$.
