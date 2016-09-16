@@ -16,14 +16,19 @@ public class Main{
     void sol() {
         sc = new MyScanner();
         out = new PrintWriter(new BufferedOutputStream(System.out));
-        int N = ni();
-        BigInteger a = new BigInteger("1");
-        BigInteger b = new BigInteger("1");
-        BigInteger c = new BigInteger("0");
-        for(int i=1;i<N;i++){
-            c = b.add(a); a = b; b = c;
+        while(true){
+            int N = ni();
+            if(N==-1) break;
+            BigInteger a = new BigInteger("1");
+            BigInteger b = new BigInteger("1");
+            BigInteger c = new BigInteger("0");
+            for(int i=1;i<N;i++){
+                c = b.add(a.add(a));
+                a = b;
+                b = c;
+            }
+            out.println(b);
         }
-        out.println(b);
         out.close();
     }
  
@@ -52,6 +57,10 @@ public class Main{
     }
  
     int ni() {
-        return Integer.parseInt(sc.next());
+        try{
+            return Integer.parseInt(sc.next());
+        }catch(Exception e){
+            return -1;
+        }
     }
 }

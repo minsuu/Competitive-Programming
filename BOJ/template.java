@@ -15,8 +15,6 @@ public class Main {
     void sol() {
         sc = new MyScanner();
         out = new PrintWriter(new BufferedOutputStream(System.out));
-        int N = ni();
-        out.println(Integer.toString(N,8));
         out.close();
     }
  
@@ -45,6 +43,6 @@ public class Main {
     }
  
     int ni() {
-        return Integer.parseInt(sc.next(),2);
+        return Integer.parseInt(sc.next());
     }
 }
